@@ -38,9 +38,55 @@ public class Trash {
         //init counter for each trash can
         tc[0] = tc[1] = tc[2] = 0;
     }
+    //helper method
+    public static void move(int y, int x, int d) {
+        if(result==1_000_000_000) return;
+        result++;
+        int ox = x;
+        int oy = y;
+        switch(d) {
+            case 0: y--;break;
+            case 1: y++;break;
+            case 2: x--;break;
+            case 3: x++;break;
+        }
+        if((x<0)||(ox<0)||(x>=1000)||(ox>=1000)) return;
+        if((y<0)||(oy<0)||(y>=1000)||(oy>=1000)) return;
+        if((tm[y][x]==-1)||(tm[oy][ox]!=-1)) return;
+        if(tm[y][x]==0) {
+            tm[oy][ox]=0;
+            tm[y][x] = -1;
+        } else {
+            int trashNo = tm[y][x] - 1;
+            if(tc[trashNo]==3500) return;
+            tm[oy][ox] = 0;
+            tc[trashNo]++;
+        }
+    }
+
+    //TODO: implement
+    public static void test() {
+
+    }
+
+    public static int errorCount() {
+        int counter = 0;
+        for(int i = 0;i<1000;i++)
+            for(int j=0;j<1000;j++)
+                if(tm[i][j]==-1)
+                    counter++;
+        return counter;
+    }
 
     public static void main(String args[]) {
-       System.out.println("run test");
+       System.out.println("test setup");
        buildMap();
+       System.out.println("test run");
+       long startTime = System.currentTimeMillis();
+       test();
+       long endTime = System.currentTimeMillis();
+       System.out.println("errors: " + errorCount());
+       System.out.println("test time: " + (endTime - startTime));
+
     }
 }
