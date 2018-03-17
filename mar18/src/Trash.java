@@ -4,6 +4,9 @@ public class Trash {
     public static int result = 0;
     public static int tm[][] = new int[1000][1000];
     public static int tc[] = new int[3];
+    public static int tcx[] = new int[3];
+    public static int tcy[] = new int[3];
+
 
     public static int r() {
         seed = seed * 214013 + 2531011;
@@ -26,12 +29,15 @@ public class Trash {
             }
         }
         //put trash can
-        for(int c = 1; c<=3; c++) {
+        for(int c = 1; c<=3;) {
             int x = r() % 1000;
             int y = r() % 1000;
 
             if(tm[y][x] == 0) {
                 tm[y][x] = c;
+                tcx[c-1] = x;
+                tcy[c-1] = y;
+                System.out.println(c + " trash : " + x + " " + y);
                 c++;
             }
         }
@@ -40,6 +46,7 @@ public class Trash {
     }
     //helper method
     public static void move(int y, int x, int d) {
+        //System.out.println("move...");
         if(result==1_000_000_000) return;
         result++;
         int ox = x;
@@ -66,8 +73,94 @@ public class Trash {
 
     //TODO: implement
     public static void test() {
+        clearTrashLine(0);
+        for(int l = 1;l<800;l++) {
+            for (int j = tcy[0] - 1; j > 0; j--) {
+                moveLineDown(j);
+            }
+            clearTrashLine(2);
+            clearTrashLine(1);
+            clearTrashLine(0);
+        }
+        p("after : " + result);
 
     }
+
+    public static void moveLineDown(int line) {
+        //p("move line down: " + line);
+        int cx = tcx[0];
+        int cy = tcy[0];
+        for (int i = 0; i < 1000; i++) {
+            if (tm[line][i] == -1) {
+                    move(line, i,1);
+            }
+
+        }
+    }
+
+    public static void p(String s){
+        System.out.println(s);
+    }
+
+    public static void clearTrashLine(int bin) {
+        //pl();
+        int cx = tcx[bin];
+        int cy = tcy[bin];
+        //for(int j=0;j<200;j++) {
+        for (int i = cx+1; i < 1000; i++) {
+            if (tm[cy][i] == -1) {
+                for(int k = i; k > cx; k--){
+                    move(cy, k,2);
+                }
+            }
+
+        }
+        for (int i = cx-1; i >0; i--) {
+            if (tm[cy][i] == -1) {
+                for(int k = i; k < cx; k++){
+                    move(cy, k,3);
+                }
+            }
+
+        }
+            //System.out.println("");
+        //}
+    }
+
+    public static void pm() {
+        for(int j=790;j<800;j++) {
+            for (int i = 200; i < 300; i++) {
+                if (tm[j][i] == -1) {
+                    System.out.print(".");
+                }
+                if (tm[j][i] == 0) {
+                    System.out.print(" ");
+                }
+                if (tm[j][i] > 0) {
+                    System.out.print("x");
+                }
+            }
+            System.out.println("");
+        }
+    }
+
+    public static void pl() {
+        int cx = tcx[0];
+        int cy = tcy[0];
+            for (int i = 0; i < 1000; i++) {
+                if (tm[cy][i] == -1) {
+                    System.out.print(".");
+                }
+                if (tm[cy][i] == 0) {
+                    System.out.print(" ");
+                }
+                if (tm[cy][i] > 0) {
+                    System.out.print("x");
+                }
+            }
+            System.out.println("");
+    }
+
 
     public static int errorCount() {
         int counter = 0;
@@ -87,6 +180,9 @@ public class Trash {
        long endTime = System.currentTimeMillis();
        System.out.println("errors: " + errorCount());
        System.out.println("test time: " + (endTime - startTime));
+        System.out.println("can1: " + tc[0]);
+        System.out.println("can2: " + tc[1]);
+        System.out.println("can3: " + tc[2]);
 
     }
 }
